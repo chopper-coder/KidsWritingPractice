@@ -12,16 +12,7 @@
 - 💾 本機資料：學習紀錄存於瀏覽器 localStorage / IndexedDB。
 - 📴 PWA：部署到 HTTPS 後可加入主畫面並支援離線使用。
 
-## GitHub Pages 部署
 
-1. 建立新的 GitHub Repository，例如 `KidsWritingPractice`。
-2. 將本專案所有檔案上傳到 `main` 分支根目錄。
-3. 到 **Settings → Pages**。
-4. **Build and deployment → Source** 選擇 **GitHub Actions**。
-5. 推送完成後，到 **Actions** 等待 `Deploy GitHub Pages` 顯示綠色勾勾。
-6. GitHub Pages 網址通常為：`https://你的帳號.github.io/儲存庫名稱/`。
-
-本專案已附 `.github/workflows/deploy.yml`，推送到 `main` 後會自動部署。
 
 ## 隱私與資料安全
 
