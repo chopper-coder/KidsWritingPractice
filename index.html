@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ff8fb3">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; worker-src 'self'; manifest-src 'self'">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>兒童書寫練習產生器 V2.3.1｜節省紙張版面優化版</title>
+<style>
+:root{--bg:#fff7fb;--panel:#fff;--text:#5f4866;--muted:#8f7d94;--accent:#ff8fb3;--accent2:#ffd5e4;--soft:#fff0f6;--line:#efd6e3;--good:#55b987;--warn:#f0a43a;--danger:#e46b75;--shadow:0 14px 35px rgba(147,93,123,.14);--canvas:#fffefc;--icon:"🐱"}
+body[data-theme="dino"]{--bg:#f4fff8;--text:#426256;--muted:#768b82;--accent:#64c996;--accent2:#ccefdc;--soft:#edfbf3;--line:#d1eadc;--icon:"🦖"}
+body[data-theme="space"]{--bg:#f5f7ff;--text:#485475;--muted:#7d86a3;--accent:#7489ff;--accent2:#dbe1ff;--soft:#eef1ff;--line:#d9def5;--icon:"🚀"}
+body[data-theme="fire"]{--bg:#fff8f5;--text:#6d4a46;--muted:#967b76;--accent:#ff7d68;--accent2:#ffd6cf;--soft:#fff0ec;--line:#f0d8d2;--icon:"🚒"}
+body[data-theme="bear"]{--bg:#fffaf2;--text:#695846;--muted:#968879;--accent:#d6a467;--accent2:#f0ddc3;--soft:#fff5e8;--line:#eadcc9;--icon:"🐻"}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,select{font:inherit}button{touch-action:manipulation}.app{min-height:100vh;padding:12px;background:radial-gradient(circle at 0 0,var(--accent2),transparent 28%),var(--bg)}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1320px;margin:0 auto 12px;background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:24px;padding:13px 16px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}.brand{display:flex;gap:11px;align-items:center;min-width:0}.mascot{width:54px;height:54px;border-radius:18px;background:var(--soft);display:grid;place-items:center;font-size:31px}.mascot:before{content:var(--icon)}.brand h1{font-size:20px;margin:0;font-weight:900;line-height:1.15}.brand p{margin:4px 0 0;font-size:12px;color:var(--muted);font-weight:700}.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.points-pill,.streak-pill{display:flex;align-items:center;gap:6px;white-space:nowrap;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:900;color:var(--accent)}
+.child-select{min-height:38px;border:1px solid var(--line);border-radius:999px;background:#fff;padding:0 11px;font-weight:900;color:var(--text)}
+.layout{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:300px minmax(0,1fr);gap:12px}.panel,.card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:var(--shadow)}.sidebar{align-self:start;position:sticky;top:10px}.section-title{font-size:13px;font-weight:900;color:var(--muted);margin:10px 0 7px}.mode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.mode-btn{min-height:52px;border:1px solid var(--line);background:#fff;border-radius:14px;font-weight:900;color:var(--text);cursor:pointer}.mode-btn.active{background:var(--soft);border-color:var(--accent);color:var(--accent)}label{display:block;font-size:12px;font-weight:900;color:var(--muted);margin:9px 0 4px}select,input[type=text],input[type=number],input[type=password]{width:100%;min-height:43px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 10px;color:var(--text);font-size:16px;outline:none}select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}.row2{display:grid;grid-template-columns:1fr 1fr;gap:7px}.switch{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:12px;font-weight:800}.switch input{width:18px;height:18px}.btn{border:0;border-radius:13px;min-height:44px;padding:0 12px;font-weight:900;cursor:pointer}.btn.primary{background:var(--accent);color:white}.btn.soft{background:var(--soft);color:var(--text);border:1px solid var(--line)}.btn.good{background:var(--good);color:#fff}.btn.warn{background:var(--warn);color:#fff}.btn.danger{background:var(--danger);color:#fff}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.actions .wide{grid-column:1/-1}.tiny{font-size:11px;color:var(--muted);line-height:1.55;margin-top:9px;padding:9px;border:1px dashed var(--line);border-radius:12px;background:#fff}
+.main{min-width:0}.top-tabs{display:flex;gap:7px;overflow:auto;padding:1px 1px 8px;scrollbar-width:thin}.view-btn{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;min-height:40px;padding:0 13px;font-weight:900;color:var(--text);cursor:pointer}.view-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}.view{display:none}.view.active{display:block}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.hero h2{margin:5px 0 2px;font-size:22px}.hero p{margin:0;color:var(--muted);font-size:12px}.badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;background:var(--soft);color:var(--accent);padding:6px 10px;font-size:11px;font-weight:900}
+.quick-sets{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px}.set-btn{border:1px solid var(--line);background:#fff;border-radius:16px;min-height:64px;padding:8px;font-weight:900;color:var(--text);cursor:pointer;text-align:left}.set-btn small{display:block;color:var(--muted);font-weight:700;margin-top:3px}.set-btn.active{background:var(--soft);border-color:var(--accent);color:var(--accent)}
+.char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:7px;margin:12px 0}.char-chip{height:52px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:900;font-size:19px;color:var(--text);cursor:pointer}.char-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.write-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.target{font-size:clamp(38px,9vw,78px);font-weight:900;line-height:1}.canvas-wrap{position:relative;width:100%;max-width:760px;margin:12px auto 0;aspect-ratio:4/3;background:var(--canvas);border:2px solid var(--line);border-radius:22px;overflow:hidden;touch-action:none;background-image:linear-gradient(to right,transparent 49.85%,color-mix(in srgb,var(--line) 65%,transparent) 50%,transparent 50.15%),linear-gradient(to bottom,transparent 49.85%,color-mix(in srgb,var(--line) 65%,transparent) 50%,transparent 50.15%)}.canvas-guide{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(130px,30vw,280px);font-weight:900;color:color-mix(in srgb,var(--text) 11%,transparent);pointer-events:none;user-select:none}.draw-canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.write-tools,.write-actions{display:flex;gap:7px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:9px}.tool-select{min-height:42px!important;width:auto!important;min-width:90px}.reward-toast{display:none;margin-top:10px;padding:12px;border-radius:15px;background:#fff9db;border:1px solid #f3df8d;color:#806716;font-weight:900;text-align:center}.reward-toast.show{display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:11px 0}.stat{background:var(--soft);border:1px solid var(--line);border-radius:15px;padding:10px;text-align:center}.stat strong{display:block;font-size:22px;color:var(--accent)}.stat span{font-size:10px;color:var(--muted);font-weight:800}
+.task-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px;margin-top:12px}.task{border:1px solid var(--line);border-radius:18px;padding:12px;background:#fff}.task-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.task h3{margin:0;font-size:15px}.progress{height:10px;border-radius:999px;background:#f4edf1;overflow:hidden;margin:9px 0}.progress i{display:block;height:100%;background:var(--accent);border-radius:999px}.task small{color:var(--muted);font-weight:700}.all-done{margin-top:12px;padding:13px;border-radius:16px;background:#fff9db;border:1px solid #f1dc82;text-align:center;font-weight:900;color:#8a6d14}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-top:12px}.award{border:1px solid var(--line);border-radius:18px;padding:13px;text-align:center;background:#fff}.award.locked{filter:grayscale(1);opacity:.48}.award .emoji{font-size:36px}.award h3{font-size:14px;margin:7px 0 4px}.award p{font-size:11px;color:var(--muted);margin:0}
+.print-sheet{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px}.print-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:9px 0;border-bottom:1px dashed var(--line);break-inside:avoid}.print-box{width:72px;height:72px;border:1px solid #cbb7c2;display:grid;place-items:center;position:relative;font-size:41px;font-weight:900}.print-box.trace{color:transparent;-webkit-text-stroke:1px #aaa}.print-box.blank{color:transparent}
+.print-box.grid-square{background:#fff}
+.print-box.grid-tian::before,.print-box.grid-tian::after,.print-box.grid-mi::before,.print-box.grid-mi::after{content:"";position:absolute;pointer-events:none;opacity:.68}
+.print-box.grid-tian::before,.print-box.grid-mi::before{left:50%;top:0;bottom:0;border-left:1px dashed #c7b6bf}
+.print-box.grid-tian::after,.print-box.grid-mi::after{top:50%;left:0;right:0;border-top:1px dashed #c7b6bf}
+.print-box.grid-mi{background:linear-gradient(45deg,transparent calc(50% - .5px),#ddd 50%,transparent calc(50% + .5px)),linear-gradient(-45deg,transparent calc(50% - .5px),#ddd 50%,transparent calc(50% + .5px)),#fff}
+.print-box.grid-dotted{border-style:dashed;background:radial-gradient(circle,#d8ccd2 1px,transparent 1.2px);background-size:12px 12px}
+.print-box.grid-blank{border-color:#e8dde2;background:#fff}
+.print-row.line-practice{display:grid;grid-template-columns:28px minmax(115px,160px) 1fr;gap:10px;align-items:center}
+.print-row.line-practice .line-example{font-size:32px;font-weight:900;text-align:center;overflow-wrap:anywhere}
+.print-row.line-practice .line-area{height:72px;position:relative;border-bottom:1.4px solid #a99aa3;background:repeating-linear-gradient(to bottom,transparent 0,transparent 23px,#d8ccd2 24px,transparent 25px)}
+.print-row.line-practice .line-area.trace-line::after{content:attr(data-text);position:absolute;left:10px;top:10px;font-size:36px;font-weight:900;color:transparent;-webkit-text-stroke:1px #aaa;letter-spacing:4px}
+.print-row.fourline-practice{display:grid;grid-template-columns:28px minmax(115px,160px) 1fr;gap:10px;align-items:center}
+.print-row.fourline-practice .four-example{font-size:32px;font-weight:900;text-align:center;overflow-wrap:anywhere}
+.four-line-area{height:78px;position:relative;border-top:1.4px solid #8fa5cf;border-bottom:1.4px solid #8fa5cf;background:linear-gradient(to bottom,transparent calc(33.33% - .5px),#b9c8e2 33.33%,transparent calc(33.33% + .5px),transparent calc(66.66% - .5px),#b9c8e2 66.66%,transparent calc(66.66% + .5px))}
+.four-line-area.trace-four::after{content:attr(data-text);position:absolute;left:12px;top:9px;font-size:38px;font-weight:700;color:transparent;-webkit-text-stroke:1px #999;letter-spacing:5px;font-family:"Comic Sans MS","Segoe Print",Arial,sans-serif}
+.print-pattern-note{font-size:11px;color:#7c6b75;margin:-4px 0 10px;text-align:center}
+.math-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.math-q{border-bottom:1px solid #aaa;padding:10px 4px;font-size:21px;font-weight:800}.footer-note{text-align:center;color:var(--muted);font-size:11px;margin-top:11px}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px;margin-top:12px}.gift{border:1px solid var(--line);background:#fff;border-radius:18px;padding:13px}.gift .emoji{font-size:30px}.gift h3{margin:7px 0 3px;font-size:14px}.gift p{margin:0;color:var(--muted);font-size:11px}.gift .cost{font-weight:900;color:var(--accent);margin:8px 0}.gift button{width:100%}.history{margin-top:13px;border-top:1px dashed var(--line);padding-top:9px}.history-item{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #f4edf1;font-size:11px;color:var(--muted)}
+.parent-lock{max-width:460px;margin:20px auto;text-align:center}.parent-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.parent-box{border:1px solid var(--line);border-radius:17px;padding:12px;background:#fff}.parent-box h3{margin:0 0 8px;font-size:14px}.list{display:grid;gap:6px}.list-row{display:flex;align-items:center;justify-content:space-between;gap:7px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#fff}.list-row small{color:var(--muted)}
+@media(max-width:920px){.layout{grid-template-columns:1fr}.sidebar{position:static}.mode-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.app{padding:7px}.header{padding:10px;border-radius:18px}.mascot{width:44px;height:44px}.brand h1{font-size:16px}.brand p{display:none}.header-right{gap:5px}.points-pill,.streak-pill{font-size:12px;padding:7px 9px}.child-select{max-width:115px}.panel,.card{padding:11px;border-radius:17px}.mode-grid{grid-template-columns:repeat(3,1fr)}.mode-btn{font-size:11px;min-height:47px}.row2,.parent-grid{grid-template-columns:1fr}.char-grid{grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px}.char-chip{height:46px;font-size:17px}.canvas-wrap{aspect-ratio:1/1}.stats{grid-template-columns:repeat(2,1fr)}.math-grid{grid-template-columns:1fr}.brand{max-width:55%}}
+
+/* ===== V1.4.1 全新介面 / Tablet-first Redesign ===== */
+:root{--radius-xl:28px;--radius-lg:20px;--surface:rgba(255,255,255,.96)}
+.app{padding:16px;background:
+ radial-gradient(circle at 8% 0%,color-mix(in srgb,var(--accent2) 82%,white),transparent 26%),
+ radial-gradient(circle at 100% 22%,color-mix(in srgb,var(--soft) 90%,white),transparent 24%),
+ var(--bg)}
+.header{max-width:1440px;border-radius:30px;padding:14px 18px;border:1px solid color-mix(in srgb,var(--accent) 20%,white);background:linear-gradient(120deg,rgba(255,255,255,.98),color-mix(in srgb,var(--soft) 72%,white));box-shadow:0 10px 30px rgba(100,70,90,.10)}
+.brand h1{font-size:22px}.mascot{width:58px;height:58px;border-radius:20px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent)}
+.layout{max-width:1440px;grid-template-columns:272px minmax(0,1fr);gap:14px}.panel,.card{border-radius:var(--radius-xl);border:1px solid color-mix(in srgb,var(--line) 82%,white);box-shadow:0 12px 32px rgba(102,76,94,.10)}
+.sidebar{padding:16px;background:var(--surface)}
+.mode-grid{grid-template-columns:repeat(2,1fr);gap:8px}.mode-btn{min-height:58px;border-radius:17px;font-size:14px}.mode-btn.active{box-shadow:0 7px 18px color-mix(in srgb,var(--accent) 22%,transparent)}
+.actions{gap:8px}.actions .btn{min-height:48px}.actions #printBtn{background:#fff8db;color:#826a10;border:1px solid #efdc84}
+.main{min-width:0}.top-tabs{position:sticky;top:8px;z-index:30;background:rgba(255,255,255,.84);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:20px;padding:7px;margin-bottom:10px;box-shadow:0 8px 22px rgba(94,75,90,.09)}
+.view-btn{min-height:44px;border-radius:14px;border:0;background:transparent}.view-btn.active{box-shadow:0 7px 16px color-mix(in srgb,var(--accent) 26%,transparent)}
+#writeView>.card{padding:20px;background:linear-gradient(160deg,#fff 0%,color-mix(in srgb,var(--soft) 55%,white) 100%)}
+.write-hero{padding-bottom:10px;border-bottom:1px dashed var(--line)}.hero-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.maximize-btn{min-height:46px;padding:0 17px;box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 26%,transparent)}
+.quick-sets{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}.set-btn{min-height:68px;border-radius:18px}.char-grid{grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:8px;max-height:190px;overflow:auto;padding:3px}.char-chip{height:56px;border-radius:16px;font-size:21px}
+.write-head{margin-top:10px}.canvas-wrap{max-width:900px;aspect-ratio:16/10;border-radius:28px;border:3px solid color-mix(in srgb,var(--accent) 28%,var(--line));box-shadow:0 14px 30px rgba(88,69,80,.10);background-color:#fffefc}.canvas-guide{font-size:clamp(150px,27vw,330px)}
+.write-tools,.write-actions{gap:9px}.write-tools .btn,.write-actions .btn,.tool-select{min-height:48px!important;border-radius:15px}.write-actions .btn{min-width:120px}.reward-toast{font-size:16px;border-radius:17px}.stats{margin-top:16px;gap:10px}.stat{border-radius:18px;padding:12px}.stat strong{font-size:25px}
+.focus-bar{display:none}
+#printView{max-width:980px;margin:0 auto}.print-sheet{background:#fff;border-radius:8px;padding:16mm;box-shadow:0 14px 35px rgba(80,65,75,.12);min-height:277mm}.print-row{gap:10px}.print-box{border-radius:4px}
+#rewardView .card,#taskView .card,#badgeView .card,#parentView .card{padding:20px}
+#printPortal{display:none}
+
+/* 平板／手機最大化書寫模式：不依賴瀏覽器 Fullscreen API，也能在 iPhone/iPad 使用 */
+body.focus-write{overflow:hidden;background:var(--bg)}
+body.focus-write .app{padding:0;min-height:var(--app-height,100vh);height:var(--app-height,100vh);overflow:hidden}
+body.focus-write .header,body.focus-write .sidebar,body.focus-write .top-tabs{display:none!important}
+body.focus-write .layout{display:block;max-width:none;height:100%;margin:0}
+body.focus-write .main{height:100%}
+body.focus-write .view{display:none!important}
+body.focus-write #writeView{display:block!important;height:100%;padding:0}
+body.focus-write #writeView>.card{height:100%;border:0;border-radius:0;box-shadow:none;padding:10px 12px 12px;display:flex;flex-direction:column;background:linear-gradient(160deg,#fff,color-mix(in srgb,var(--soft) 55%,white));overflow:hidden}
+body.focus-write .write-hero,body.focus-write .quick-sets,body.focus-write .char-grid,body.focus-write .write-head,body.focus-write .stats{display:none!important}
+body.focus-write .focus-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;flex:0 0 auto;padding:4px 2px 8px}
+.focus-target{font-size:17px;font-weight:900}.focus-target strong{font-size:28px;color:var(--accent);margin-left:5px}.focus-points{font-weight:900;color:var(--accent);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:7px 12px}
+body.focus-write .canvas-wrap{flex:1 1 auto;min-height:0;width:100%;max-width:none;height:auto;aspect-ratio:auto;margin:0;border-radius:22px;box-shadow:none}
+body.focus-write .canvas-guide{font-size:clamp(180px,42vmin,480px)}
+body.focus-write .write-tools{flex:0 0 auto;margin-top:7px}
+body.focus-write .write-actions{flex:0 0 auto;margin-top:7px}
+body.focus-write .reward-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:60;min-width:min(500px,88vw);box-shadow:0 10px 28px rgba(0,0,0,.12)}
+body.focus-write .write-actions .btn{min-height:50px;min-width:128px;font-size:15px}
+
+@media(max-width:1000px){
+ .layout{grid-template-columns:1fr}.sidebar{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:end}.sidebar>.section-title,.sidebar>.mode-grid,.sidebar>.actions,.sidebar>.tiny{grid-column:1/-1}.sidebar .mode-grid{grid-template-columns:repeat(3,1fr)}.sidebar label{margin-top:3px}.top-tabs{top:6px}
+ .canvas-wrap{aspect-ratio:4/3}
+}
+@media(max-width:700px){
+ .app{padding:8px 8px 82px}.header{border-radius:21px;padding:10px 12px}.brand h1{font-size:17px}.brand p{display:none}.mascot{width:46px;height:46px;font-size:27px}.header-right{gap:5px}.streak-pill{display:none}.points-pill{padding:7px 9px}.child-select{max-width:120px}
+ .sidebar{display:block;border-radius:21px}.sidebar .mode-grid{grid-template-columns:repeat(3,1fr)}.mode-btn{min-height:52px;font-size:12px}
+ .top-tabs{position:fixed;left:8px;right:8px;bottom:8px;top:auto;z-index:80;margin:0;padding:6px;justify-content:space-around;overflow-x:auto;border-radius:21px;box-shadow:0 10px 28px rgba(70,55,65,.18)}.view-btn{font-size:11px;min-height:48px;padding:0 9px}.view-btn:nth-child(3),.view-btn:nth-child(6){display:none}
+ #writeView>.card{padding:13px;border-radius:21px}.write-hero h2{font-size:18px}.hero-actions .badge{display:none}.maximize-btn{width:100%}.quick-sets{grid-template-columns:1fr 1fr}.set-btn{min-height:58px}.char-grid{grid-template-columns:repeat(6,1fr);max-height:148px}.char-chip{height:48px;font-size:18px}.canvas-wrap{aspect-ratio:1/1;border-radius:20px}.canvas-guide{font-size:clamp(115px,43vw,220px)}.write-tools{display:grid;grid-template-columns:1fr 1fr 1fr}.write-tools .tool-select{width:100%!important;min-width:0}.write-actions{display:grid;grid-template-columns:1fr 1fr}.write-actions .btn{min-width:0;width:100%}.stats{grid-template-columns:repeat(2,1fr)}
+ .print-sheet{padding:9mm;border-radius:4px;min-height:auto}.print-row{gap:5px}.print-box{width:60px!important;height:60px!important;font-size:34px}
+}
+@media(max-width:390px){.sidebar .mode-grid{grid-template-columns:repeat(2,1fr)}.char-grid{grid-template-columns:repeat(5,1fr)}.view-btn{padding:0 7px}.top-tabs{gap:2px}}
+
+@media print{
+ html,body{background:#fff!important;margin:0!important;padding:0!important}
+ body.printing-practice>.app{display:none!important}
+ body.printing-practice>#printPortal{display:block!important}
+ body.printing-practice>#printPortal>.print-sheet{display:block!important;width:auto!important;min-height:auto!important;margin:0!important;padding:7mm!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;filter:none}
+ body.printing-practice>#printPortal>.print-sheet.ink-save-print{filter:grayscale(1)!important}
+ body.printing-practice>#printPortal .print-row{break-inside:avoid-page!important;page-break-inside:avoid!important}
+ body:not(.printing-practice) .header,body:not(.printing-practice) .sidebar,body:not(.printing-practice) .top-tabs,body:not(.printing-practice) .no-print{display:none!important}
+ body:not(.printing-practice) .app,body:not(.printing-practice) .layout,body:not(.printing-practice) .main{display:block!important;padding:0!important;margin:0!important;background:#fff!important;border:0!important;box-shadow:none!important}
+ body:not(.printing-practice) .view{display:none!important}
+ body:not(.printing-practice) #printView{display:block!important}
+ body:not(.printing-practice) #printView .print-sheet{border:0!important;padding:7mm!important;box-shadow:none!important}
+ @page{size:A4 portrait;margin:7mm}
+}
+
+/* V1.5.1 大字滿版學習單 */
+.smart-box{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(135deg,var(--soft),#fff)}
+.smart-box h3{font-size:13px;margin:0 0 7px;color:var(--accent)}
+.mode-style-note{margin-top:5px;font-size:10px;color:var(--muted);font-weight:800}
+.rename-wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;margin-top:6px}.rename-wrap input{min-height:38px!important;font-size:14px!important}.rename-wrap .btn{min-height:38px}
+.smart-section{margin:10px 0 16px;break-inside:auto}.smart-section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:2px solid var(--line);padding-bottom:5px;margin-bottom:7px}.smart-section-title h3{margin:0;font-size:16px}.smart-section-title span{font-size:10px;color:var(--muted);font-weight:800}
+.mixed-label{display:flex!important;align-items:center;gap:7px!important;margin-top:9px!important}.mixed-label input{width:18px;height:18px}
+@media(max-width:600px){.smart-box{padding:8px}.rename-wrap{grid-template-columns:1fr}.rename-wrap .btn{width:100%}}
+
+/* ===== V1.5.1 大字滿版學習單 ===== */
+#printContent.fill-page{min-height:225mm;display:flex;flex-direction:column;justify-content:space-evenly;gap:2mm}
+#printContent.fill-page>.print-pattern-note{flex:0 0 auto;margin:0 0 2mm}
+#printContent.fill-page>.print-row{flex:1 1 0;min-height:0;margin:0;padding:1.5mm 0;display:grid;align-items:center;grid-template-columns:7mm repeat(var(--cell-count,5),minmax(0,1fr));gap:2.2mm;border-bottom:0}
+#printContent.fill-page>.print-row>strong{width:auto!important;font-size:4.6mm;text-align:center}
+#printContent.fill-page .print-box{width:100%!important;height:auto!important;aspect-ratio:1/1;font-size:clamp(12mm,var(--practice-font,18mm),24mm);line-height:1;border-width:1.3px}
+#printContent.fill-page .print-box.trace{-webkit-text-stroke:1.15px #999}
+#printContent.fill-page .print-row.line-practice,#printContent.fill-page .print-row.fourline-practice{grid-template-columns:7mm minmax(34mm,45mm) 1fr;min-height:27mm;gap:3mm}
+#printContent.fill-page .line-example,#printContent.fill-page .four-example{font-size:var(--line-example-size,14mm);line-height:1;font-weight:900}
+#printContent.fill-page .line-area,#printContent.fill-page .four-line-area{height:100%;min-height:24mm}
+#printContent.fill-page .line-area.trace-line::after,#printContent.fill-page .four-line-area.trace-four::after{font-size:var(--line-trace-size,13mm);left:3mm;top:50%;transform:translateY(-50%);letter-spacing:1.5mm}
+#printContent.fill-page .four-line-area{background-size:100% 33.333%;}
+#printContent.dense-page .print-row{justify-content:space-between}
+#printContent.dense-page .print-box{font-size:calc(var(--practice-box-mm,22) * .88mm)}
+#printContent .print-box{font-family:"DFKai-SB","BiauKai","KaiTi","Microsoft JhengHei","PingFang TC",serif}
+/* V1.7.2 格內字體安全滿版：使用 0-100 SVG 座標，字會跟著格子同比例放大 */
+.print-box{overflow:hidden;padding:4%}
+.practice-glyph-svg{display:block;width:100%;height:100%;overflow:hidden;pointer-events:none}
+.practice-glyph-svg text{font-family:"DFKai-SB","BiauKai","KaiTi","Microsoft JhengHei","PingFang TC",serif;font-weight:900;text-anchor:middle;dominant-baseline:central}
+.practice-glyph-svg.solid text{fill:#2f2b2d;stroke:none}
+.practice-glyph-svg.trace text{fill:none;stroke:#979797;stroke-width:1.7;stroke-dasharray:2.8 2.2;stroke-linecap:round;stroke-linejoin:round}
+.print-box.trace{color:inherit;-webkit-text-stroke:0 transparent}
+/* 注音的字面在字型 em box 內較小，因此採較大的 em 尺寸，但不改變字形比例 */
+.practice-glyph-svg.glyph-zhuyin text{font-size:108px}
+.practice-glyph-svg.glyph-cjk text{font-size:88px}
+.practice-glyph-svg.glyph-number-single text{font-size:92px}
+.practice-glyph-svg.glyph-latin-single text{font-size:90px;font-family:"Comic Sans MS","Segoe Print",Arial,sans-serif}
+.practice-glyph-svg.glyph-pair text{font-size:64px}
+.practice-glyph-svg.glyph-long text{font-size:46px}
+
+#printContent .print-row{width:100%}
+#printHeader h2{font-size:7mm!important;margin:2mm 0 3mm!important}
+#printHeader>div{font-size:4.5mm}
+.print-sheet{display:flex;flex-direction:column}
+.print-sheet #printContent{flex:1 1 auto}
+.print-sheet .footer-note{flex:0 0 auto;font-size:3.6mm;margin-top:3mm}
+@media(max-width:700px){#printContent.fill-page{min-height:0;display:block}#printContent.fill-page>.print-row{display:flex;min-height:auto;padding:7px 0}#printContent.fill-page .print-box{width:60px!important;height:60px!important;aspect-ratio:auto;font-size:34px}.print-sheet #printContent{display:block}}
+@media print{
+ body.printing-practice>#printPortal>.print-sheet{min-height:283mm!important;display:flex!important;flex-direction:column!important}
+ body.printing-practice>#printPortal #printContent.fill-page{min-height:245mm!important;display:flex!important;flex-direction:column!important;justify-content:space-evenly!important}
+ body.printing-practice>#printPortal #printContent.fill-page>.print-row{display:grid!important;break-inside:avoid!important}
+ body.printing-practice>#printPortal #printContent.fill-page .print-box{width:100%!important;height:auto!important;aspect-ratio:1/1!important}
+}
+
+
+/* ===== V1.6 自動分頁 & 每日學習單 ===== */
+.page-summary{margin-top:8px;padding:8px 10px;border-radius:12px;background:var(--soft);border:1px dashed var(--line);font-size:12px;font-weight:900;color:var(--muted);text-align:center}
+.print-sheet.multi-pages{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;min-height:0!important;display:block!important}
+.print-sheet.multi-pages>#printHeader,.print-sheet.multi-pages>.footer-note{display:none!important}
+#printContent.page-stack{display:block!important;min-height:0!important}
+.practice-page{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12mm;min-height:277mm;margin:0 0 18px;box-shadow:0 14px 35px rgba(80,65,75,.12);display:flex;flex-direction:column;break-after:page;page-break-after:always}
+.practice-page:last-child{break-after:auto;page-break-after:auto}
+.practice-page .page-head{flex:0 0 auto}
+.practice-page .page-head .name-line{display:flex;justify-content:space-between;margin-bottom:3mm;font-size:4.2mm;font-weight:800}
+.practice-page .page-head h2{text-align:center;margin:1mm 0 2mm;font-size:7mm}
+.practice-page .page-meta{text-align:center;color:#7c6b75;font-size:3.5mm;margin-bottom:2mm}
+.practice-page .page-content{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;gap:1.7mm}
+.practice-page.top-align .page-content{justify-content:flex-start;gap:3.2mm}
+.practice-page .page-content>.print-row{flex:1 1 0;min-height:0;margin:0;padding:1.2mm 0;display:grid;align-items:center;grid-template-columns:7mm repeat(var(--cell-count,5),minmax(0,1fr));gap:2.2mm;border-bottom:0}
+.practice-page .page-content>.print-row>strong{width:auto!important;font-size:4.5mm;text-align:center}
+.practice-page .page-content .print-box{width:100%!important;height:auto!important;aspect-ratio:1/1;font-size:var(--page-practice-font,18mm);line-height:1;border-width:1.3px}
+.practice-page .page-content .print-box.trace{-webkit-text-stroke:1.15px #999}
+.practice-page .page-content .print-row.line-practice,.practice-page .page-content .print-row.fourline-practice{grid-template-columns:7mm minmax(34mm,45mm) 1fr;min-height:26mm;gap:3mm}
+.practice-page .page-content .line-example,.practice-page .page-content .four-example{font-size:var(--page-line-size,14mm);line-height:1}
+.practice-page .page-content .line-area,.practice-page .page-content .four-line-area{height:100%;min-height:23mm}
+.preview-viewport .practice-page .page-content{justify-content:flex-start;gap:2.2mm}
+.preview-viewport .practice-page .page-content>.print-row{flex:0 0 auto;padding:1.5mm 0}
+.preview-viewport .practice-page .page-content .print-box{padding:5%}
+.preview-viewport .practice-page .practice-glyph-svg.glyph-number-single text{font-size:84px}
+.preview-viewport .practice-page .practice-glyph-svg.glyph-cjk text{font-size:84px}
+.preview-viewport .practice-page .practice-glyph-svg.glyph-zhuyin text{font-size:102px}
+.practice-page .page-content .line-area.trace-line::after,.practice-page .page-content .four-line-area.trace-four::after{font-size:var(--page-line-trace,13mm);left:3mm;top:50%;transform:translateY(-50%);letter-spacing:1.5mm}
+.practice-page .page-footer{flex:0 0 auto;text-align:center;font-size:3.4mm;color:#8b7781;margin-top:2mm}
+.daily-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2mm}.daily-title span{font-size:3.5mm;color:#7c6b75}
+.daily-math-grid{display:grid;grid-template-columns:1fr 1fr;gap:6mm 10mm;margin:0;width:100%;align-content:start}.daily-math-q{font-size:8mm;font-weight:900;border-bottom:1px solid #bbb;padding:3mm 1mm}.practice-page.daily-math-page .page-content{justify-content:flex-start}.practice-page.daily-math-page .page-footer{margin-top:3mm}
+@media(max-width:700px){.practice-page{min-height:auto;padding:14px;margin-bottom:12px}.practice-page .page-content{display:block}.practice-page .page-content>.print-row{display:flex;padding:7px 0}.practice-page .page-content .print-box{width:60px!important;height:60px!important;aspect-ratio:auto;font-size:34px}.practice-page .page-head .name-line{font-size:13px}.practice-page .page-head h2{font-size:22px}.daily-math-q{font-size:22px}}
+@media print{
+ body.printing-practice>#printPortal>.print-sheet.multi-pages{display:block!important;width:210mm!important;min-height:0!important;margin:0!important;padding:0!important;background:transparent!important}
+ body.printing-practice>#printPortal .practice-page{display:flex!important;width:210mm!important;min-height:297mm!important;margin:0!important;padding:10mm 12mm!important;border:0!important;border-radius:0!important;box-shadow:none!important;box-sizing:border-box!important;break-after:page!important;page-break-after:always!important}
+ body.printing-practice>#printPortal .practice-page:last-child{break-after:auto!important;page-break-after:auto!important}
+ body.printing-practice>#printPortal .practice-page .page-content>.print-row{display:grid!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ body.printing-practice>#printPortal .practice-page .print-box{width:100%!important;height:auto!important;aspect-ratio:1/1!important}
+}
+
+
+/* ===== V1.7 兒童模式 & 家長管理 ===== */
+.role-switch{display:flex;gap:4px;padding:4px;background:var(--soft);border:1px solid var(--line);border-radius:999px}
+.role-btn{border:0;background:transparent;color:var(--text);border-radius:999px;min-height:34px;padding:0 10px;font-weight:900;cursor:pointer;white-space:nowrap}
+.role-btn.active{background:var(--accent);color:#fff;box-shadow:0 5px 12px color-mix(in srgb,var(--accent) 25%,transparent)}
+body.child-mode .parent-only,body.child-mode .parent-tab{display:none!important}
+body.child-mode .layout{grid-template-columns:minmax(0,1fr);max-width:1080px}
+body.child-mode .main{width:100%}
+body.child-mode .top-tabs{justify-content:center}
+body.parent-mode .parent-tab{display:block}
+.parent-dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}
+.parent-dash-card{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+.parent-dash-card strong{display:block;font-size:24px;color:var(--accent)}
+.parent-dash-card span{font-size:11px;color:var(--muted)}
+.weekly-summary{display:grid;gap:7px}
+.week-row{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:center;font-size:12px}
+.week-bar{height:10px;background:#eee;border-radius:999px;overflow:hidden}.week-bar i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.import-btn{display:flex;width:100%;align-items:center;justify-content:center;margin-top:7px;cursor:pointer}
+.pen-only{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:0 11px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12px;font-weight:900;cursor:pointer}
+.pen-only input{width:17px;height:17px}
+.child-welcome{display:none}
+@media(max-width:760px){.role-switch{order:3;width:100%}.role-btn{flex:1}.header-right{flex-wrap:wrap}.parent-dashboard{grid-template-columns:repeat(2,1fr)}body.child-mode .top-tabs{justify-content:space-around}.pen-only{width:100%;justify-content:center}}
+@media(max-width:420px){.child-select{max-width:145px}.role-btn{font-size:12px;padding:0 7px}}
+
+
+
+/* ===== V1.7.3 畫面預覽 & 快速列印修正版 ===== */
+.quick-print-top{margin:10px 0 4px;position:sticky;top:0;z-index:8;padding:3px 0 7px;background:linear-gradient(to bottom,var(--surface,#fff) 76%,transparent)}
+.quick-print-top .btn{width:100%;min-height:50px;font-size:15px;box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 22%,transparent)}
+@media(min-width:1001px){
+ .sidebar{max-height:calc(100vh - 20px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:12px}
+}
+
+@media screen{
+ #printView{width:100%;max-width:100%;overflow:hidden;margin:0 auto}
+ #printView .print-sheet.multi-pages{width:100%;max-width:100%;overflow:visible}
+ #printView #printContent.page-stack{width:100%;max-width:100%;min-width:0}
+ #printView .practice-page{
+   width:100%;max-width:900px;min-width:0;min-height:auto;
+   margin:0 auto 18px;padding:clamp(14px,2.4vw,28px);
+   box-sizing:border-box;overflow:hidden;
+ }
+ #printView .practice-page .page-head .name-line{font-size:clamp(12px,1.7vw,15px);gap:12px;flex-wrap:wrap}
+ #printView .practice-page .page-head h2{font-size:clamp(22px,3.3vw,30px);margin:4px 0 7px;line-height:1.2}
+ #printView .practice-page .page-meta{font-size:clamp(10px,1.45vw,13px);margin-bottom:8px;line-height:1.4}
+ #printView .practice-page .page-content{width:100%;min-width:0;gap:clamp(5px,.9vw,10px)}
+ #printView .practice-page .page-content>.print-row{
+   width:100%;min-width:0;display:grid;
+   grid-template-columns:28px repeat(var(--cell-count,5),minmax(0,1fr));
+   gap:clamp(5px,.9vw,10px);padding:clamp(4px,.7vw,8px) 0;
+ }
+ #printView .practice-page .page-content>.print-row>strong{width:auto!important;font-size:clamp(13px,1.7vw,17px);text-align:center}
+ #printView .practice-page .page-content .print-box{
+   width:100%!important;height:auto!important;max-width:none!important;min-width:0!important;
+   aspect-ratio:1/1!important;box-sizing:border-box!important;
+ }
+ #printView .practice-page .page-content .print-row.line-practice,
+ #printView .practice-page .page-content .print-row.fourline-practice{
+   display:grid;grid-template-columns:28px minmax(80px,140px) minmax(0,1fr);gap:clamp(7px,1.2vw,12px)
+ }
+ #printView .practice-page .page-content .line-area,
+ #printView .practice-page .page-content .four-line-area{min-width:0;width:100%}
+ #printView .practice-page .page-footer{font-size:clamp(10px,1.4vw,13px);margin-top:8px}
+ #printView .daily-math-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,28px)}
+ #printView .daily-math-q{font-size:clamp(18px,3vw,28px);min-width:0}
+}
+
+@media screen and (max-width:700px){
+ #printView .practice-page{padding:12px 9px;margin-bottom:12px;border-radius:12px}
+ #printView .practice-page .page-content>.print-row{
+   display:grid!important;
+   grid-template-columns:22px repeat(var(--cell-count,5),minmax(0,1fr))!important;
+   gap:4px!important;padding:5px 0!important;
+ }
+ #printView .practice-page .page-content .print-box{
+   width:100%!important;height:auto!important;max-width:none!important;min-width:0!important;
+   aspect-ratio:1/1!important;font-size:inherit!important;
+ }
+ #printView .practice-page .page-content .print-row.line-practice,
+ #printView .practice-page .page-content .print-row.fourline-practice{
+   display:grid!important;grid-template-columns:22px minmax(64px,92px) minmax(0,1fr)!important;gap:5px!important
+ }
+ #printView .practice-page .page-head .name-line{font-size:12px}
+ #printView .practice-page .page-head h2{font-size:21px}
+ #printView .practice-page .page-meta{font-size:10px}
+ #printView .daily-math-grid{grid-template-columns:1fr}
+ .quick-print-top{position:static;background:transparent;padding-top:2px}
+}
+
+
+/* ===== V1.8 列印穩定性 & 平板書寫 UX 強化 ===== */
+@media(min-width:1001px){
+  .layout{height:calc(100vh - 104px);overflow:hidden;align-items:stretch}
+  .sidebar{height:100%;max-height:none!important;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;position:relative;top:auto}
+  .main{height:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:3px}
+  .top-tabs{top:0}
+  .quick-print-top{top:0;background:linear-gradient(to bottom,var(--surface,#fff) 82%,rgba(255,255,255,.82) 92%,transparent)}
+}
+.preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:0 0 10px;padding:9px 10px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.92);position:sticky;top:62px;z-index:20;box-shadow:0 7px 18px rgba(90,70,82,.07)}
+.preview-toolbar .zoom-group{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.zoom-btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:10px;min-height:36px;padding:0 10px;font-weight:900;cursor:pointer}.zoom-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.layout-safety{font-size:12px;font-weight:900;color:var(--good);background:#f0fff7;border:1px solid #bfe7d2;border-radius:999px;padding:7px 10px}.layout-safety.warn{color:#9a6613;background:#fff8df;border-color:#f0d992}
+.preview-viewport{width:100%;overflow:auto;padding:2px 2px 10px;overscroll-behavior:contain}.preview-scale{width:100%;margin:0 auto;transition:width .16s ease}.preview-scale.zoom-fixed{max-width:none;margin-left:auto;margin-right:auto}
+@media screen{
+  #printView .practice-page{aspect-ratio:210 / 297;min-height:0!important;height:auto!important;display:flex!important;flex-direction:column!important}
+  #printView .practice-page .page-content{flex:1 1 auto;min-height:0}
+  #printView .practice-page .practice-glyph-svg.glyph-zhuyin text{font-size:104px}
+  #printView .practice-page .practice-glyph-svg.glyph-cjk text{font-size:88px}
+  #printView .practice-page .practice-glyph-svg.glyph-number-single text{font-size:90px}
+  #printView .practice-page .practice-glyph-svg.glyph-latin-single text{font-size:88px}
+}
+.draft-pill{display:none;align-items:center;gap:5px;border:1px solid #d9d1ef;background:#f7f4ff;color:#71639a;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900}.draft-pill.show{display:inline-flex}
+@media(max-width:1000px){.preview-toolbar{position:static}.preview-viewport{padding-bottom:8px}}
+@media(max-width:700px){
+  .preview-toolbar{padding:7px}.preview-toolbar>strong{width:100%}.zoom-btn{min-height:40px;padding:0 9px;font-size:12px}
+  .preview-scale{min-width:0}.layout-safety{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:700px){
+  body.focus-write #writeView>.card{padding:6px 9px}
+  body.focus-write .focus-bar{padding:2px 0 5px;flex-wrap:nowrap}
+  body.focus-write .focus-target strong{font-size:23px}
+  body.focus-write .canvas-wrap{border-radius:16px}
+  body.focus-write .write-tools,body.focus-write .write-actions{margin-top:4px;gap:5px}
+  body.focus-write .write-tools .btn,body.focus-write .write-actions .btn,body.focus-write .tool-select,body.focus-write .pen-only{min-height:42px!important}
+}
+@media print{.preview-toolbar,.preview-viewport{display:contents!important}.preview-scale{width:auto!important}}
+
+
+/* ===== V1.8.1 預覽滾輪 / 側欄 / 自訂列印修正 ===== */
+textarea{font:inherit}
+.custom-print-card{margin:10px 0;padding:11px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,#fff,var(--soft))}
+.custom-print-card h3{margin:0 0 4px;font-size:13px;color:var(--accent)}
+.custom-print-card p{margin:0 0 7px;font-size:10px;line-height:1.45;color:var(--muted);font-weight:700}
+.custom-print-card textarea{width:100%;min-height:82px;max-height:170px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text);padding:9px 10px;font-size:15px;line-height:1.45;outline:none}
+.custom-print-card textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+.custom-print-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7px;align-items:end;margin-top:7px}
+.custom-print-tools>div{min-width:0}.custom-print-tools select{min-width:0}
+.custom-print-status{margin-top:6px;font-size:10px;color:var(--muted);font-weight:800;line-height:1.35}
+.sidebar .row2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.sidebar .row2>div,.sidebar select,.sidebar input{min-width:0}
+.sidebar .mixed-label{line-height:1.35;align-items:flex-start!important}
+.sidebar .mixed-label input{flex:0 0 auto;margin-top:2px}
+@media(min-width:1001px){
+  .layout{grid-template-columns:326px minmax(0,1fr)}
+  .sidebar{padding-right:10px!important;scrollbar-gutter:auto!important;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--accent) 42%,#aaa) transparent}
+  .main{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--accent) 38%,#aaa) transparent}
+  .preview-viewport{overflow-x:auto!important;overflow-y:visible!important;overscroll-behavior-x:contain;overscroll-behavior-y:auto!important}
+  .sidebar::-webkit-scrollbar,.main::-webkit-scrollbar,.preview-viewport::-webkit-scrollbar{width:8px;height:8px}
+  .sidebar::-webkit-scrollbar-thumb,.main::-webkit-scrollbar-thumb,.preview-viewport::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent) 42%,#aaa);border-radius:999px}
+  .sidebar::-webkit-scrollbar-track,.main::-webkit-scrollbar-track,.preview-viewport::-webkit-scrollbar-track{background:transparent}
+}
+@media(max-width:700px){.custom-print-tools{grid-template-columns:1fr}.custom-print-card textarea{min-height:96px}}
+@media print{.custom-print-card{display:none!important}}
+
+
+/* ===== V1.8.2 小朋友自由選科 / Reliability Hotfix（V1.9 保留） ===== */
+.child-subject-picker{display:none;margin:0 0 10px;padding:10px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,#fff,color-mix(in srgb,var(--soft) 72%,white));box-shadow:0 7px 18px rgba(90,70,82,.06)}
+body.child-mode .child-subject-picker{display:block}
+body.parent-mode .child-subject-picker{display:none!important}
+.child-subject-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.child-subject-head strong{font-size:15px;color:var(--accent)}
+.child-subject-head span{font-size:11px;color:var(--muted);font-weight:800}
+.child-subject-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.child-mode-btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:15px;min-height:54px;padding:6px 4px;font-weight:900;cursor:pointer;touch-action:manipulation;line-height:1.15}
+.child-mode-btn span{display:block;font-size:20px;margin-bottom:3px}.child-mode-btn small{font-size:11px;font-weight:900}
+.child-mode-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 7px 16px color-mix(in srgb,var(--accent) 24%,transparent)}
+.child-math-note{display:none;margin:8px 0 0;padding:8px 10px;border-radius:12px;background:#fff8df;border:1px solid #f0d992;color:#8a681b;font-size:11px;font-weight:800}
+body.child-mode.math-child-active .child-math-note{display:block}
+body.focus-write .child-subject-picker{display:none!important}
+@media(max-width:700px){.child-subject-picker{border-radius:17px;padding:8px}.child-subject-grid{grid-template-columns:repeat(5,minmax(58px,1fr));overflow-x:auto;padding-bottom:2px}.child-mode-btn{min-width:64px;min-height:52px}.child-subject-head span{display:none}}
+@media(max-width:420px){.child-subject-grid{grid-template-columns:repeat(5,68px);justify-content:start}.child-mode-btn span{font-size:18px}.child-mode-btn small{font-size:10px}}
+
+
+/* ===== V1.9 智慧每日學習（V2.1 保留無語音版本） ===== */
+.smart-daily-bar{display:none;margin:0 0 10px;padding:12px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,color-mix(in srgb,var(--soft) 80%,white),#fff);box-shadow:0 7px 18px rgba(90,70,82,.06)}
+body.child-mode .smart-daily-bar{display:block}body.parent-mode .smart-daily-bar,body.focus-write .smart-daily-bar{display:none!important}
+.smart-daily-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.smart-daily-head strong{font-size:15px;color:var(--accent)}.smart-daily-head span{font-size:11px;color:var(--muted);font-weight:800}
+.smart-daily-progress{height:11px;background:#f2eaf0;border-radius:999px;overflow:hidden;margin:9px 0}.smart-daily-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#ffd36f));border-radius:999px;transition:width .2s ease}
+.smart-daily-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.smart-daily-actions .btn{min-height:45px}
+
+.review-state{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;background:#fff8df;border:1px solid #efd589;color:#8a681b;font-size:11px;font-weight:900}
+.gift-goal{margin:12px 0 4px;padding:13px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(135deg,var(--soft),#fff)}.gift-goal-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.gift-goal-top strong{font-size:15px;color:var(--accent)}.gift-goal select{width:auto;min-width:180px;max-width:100%;min-height:40px}.goal-progress{height:13px;background:#efe8ed;border-radius:999px;overflow:hidden;margin:10px 0 6px}.goal-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd269);border-radius:999px;transition:width .2s ease}.goal-text{font-size:12px;color:var(--muted);font-weight:800}
+.task .task-start{width:100%;margin-top:8px;min-height:38px}.review-tip{margin-top:8px;padding:9px 10px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:11px;font-weight:800;background:#fff}
+@media print{.smart-daily-bar,.gift-goal{display:none!important}}
+
+
+
+@media(max-width:700px){.smart-daily-actions{grid-template-columns:1fr}.gift-goal-top{align-items:stretch}.gift-goal select{width:100%}}
+
+/* ===== V2.0 智慧成長學習系統（V2.1 延續） ===== */
+.install-app-btn{min-height:36px!important;padding:0 10px!important;border-radius:999px!important;font-size:12px!important;white-space:nowrap}
+.offline-pill{display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 10px;border:1px solid #bfe7d2;border-radius:999px;background:#f0fff7;color:#32835b;font-size:11px;font-weight:900;white-space:nowrap}
+.offline-pill.offline{background:#fff5df;border-color:#efd393;color:#986a18}
+.growth-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.growth-card{border:1px solid var(--line);border-radius:18px;padding:13px;background:#fff;min-width:0}.growth-card.full{grid-column:1/-1}.growth-card h3{margin:0 0 8px;font-size:15px;color:var(--accent)}
+.daily-plan-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.daily-plan-item{border:1px solid var(--line);border-radius:14px;padding:10px 8px;background:var(--soft);text-align:center}.daily-plan-item strong{display:block;font-size:17px;color:var(--accent)}.daily-plan-item small{font-size:10px;color:var(--muted);font-weight:800}.daily-plan-item.done{background:#effcf5;border-color:#bfe4ce}.daily-plan-item.done strong{color:#3a9568}
+.weak-list{display:grid;gap:7px}.weak-item{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:13px;padding:9px;background:#fff8df}.weak-item strong{font-size:17px}.weak-item small{color:#8b6a1c;font-weight:800}.weak-item .btn{min-height:34px;padding:0 9px}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}.artwork-card{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 6px 16px rgba(80,65,75,.06)}.artwork-card img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff}.artwork-meta{padding:9px}.artwork-meta strong{display:block;font-size:13px}.artwork-meta small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.artwork-actions{display:flex;gap:5px;margin-top:7px}.artwork-actions .btn{min-height:32px;flex:1;padding:0 6px;font-size:10px}
+.gallery-empty{padding:28px 12px;text-align:center;border:1px dashed var(--line);border-radius:16px;color:var(--muted);font-weight:800;background:var(--soft)}
+.growth-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.growth-summary .mini{border:1px solid var(--line);border-radius:13px;padding:9px;text-align:center;background:var(--soft)}.growth-summary .mini strong{display:block;color:var(--accent);font-size:20px}.growth-summary .mini span{font-size:9px;color:var(--muted);font-weight:800}
+.report-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.report-chip{border:1px solid var(--line);border-radius:12px;padding:8px 5px;text-align:center;background:#fff}.report-chip strong{display:block;color:var(--accent);font-size:17px}.report-chip span{font-size:9px;color:var(--muted)}.report-tip{margin-top:8px;padding:9px 10px;border-radius:12px;background:#fff8df;border:1px solid #efd589;color:#7d631a;font-size:11px;font-weight:800;line-height:1.5}
+.pwa-help{margin-top:7px;padding:8px 9px;border:1px dashed var(--line);border-radius:12px;background:var(--soft);font-size:10px;color:var(--muted);line-height:1.45}
+.smart-toggle-row{display:grid;gap:7px}.smart-toggle-row .switch{margin:0;padding:8px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.auto-weak-badge{display:inline-flex;align-items:center;gap:5px;background:#fff8df;border:1px solid #efd589;border-radius:999px;padding:5px 8px;font-size:10px;color:#8a681b;font-weight:900}
+@media(max-width:800px){.growth-grid{grid-template-columns:1fr}.growth-card.full{grid-column:auto}.daily-plan-list{grid-template-columns:repeat(2,1fr)}.report-breakdown{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.growth-summary{grid-template-columns:1fr 1fr 1fr}.offline-pill{display:none}.install-app-btn{font-size:11px!important}}
+@media print{#growthView,.install-app-btn,.offline-pill{display:none!important}}
+
+
+/* ===== V2.0.1 數學平板手寫強化（V2.1 延續） ===== */
+body.math-tablet .target{font-size:clamp(32px,7vw,68px);letter-spacing:.02em}
+body.math-tablet #markReviewBtn{display:none!important}
+body.math-tablet .review-tip{display:none!important}
+.math-tablet-hint{display:none;margin:8px 0 0;padding:9px 11px;border-radius:13px;background:#fff8df;border:1px solid #f0d992;color:#85651b;font-size:11px;font-weight:900;text-align:center}
+body.math-tablet .math-tablet-hint{display:block}
+@media(max-width:700px){body.math-tablet .target{font-size:clamp(28px,10vw,52px)}body.math-tablet .write-actions{grid-template-columns:1fr 1fr}.math-tablet-hint{font-size:10px}}
+.child-math-controls{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0;padding:10px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,var(--soft),#fff)}
+body.child-mode.math-tablet .child-math-controls{display:grid}
+.child-math-controls label{margin:0 0 4px;font-size:10px}.child-math-controls select{min-height:40px;font-size:14px}
+body.focus-write .child-math-controls{display:none!important}
+@media(max-width:600px){.child-math-controls{grid-template-columns:1fr 1fr}.child-math-controls>div:last-child{grid-column:1/-1}}
+
+
+/* ===== V2.1 數學智慧練習 & 資料安全 ===== */
+.update-app-bar{max-width:1440px;margin:0 auto 10px;padding:10px 12px;border:1px solid #efd589;border-radius:16px;background:#fff8df;color:#7d631a;display:flex;align-items:center;gap:8px;box-shadow:0 8px 20px rgba(80,65,75,.08);font-size:12px;font-weight:900}.update-app-bar[hidden]{display:none!important}.update-app-bar span{flex:1}.update-app-bar .btn{min-height:36px}
+.math-answer-panel{display:none;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;max-width:760px;margin:10px auto 0;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,#fff,var(--soft))}body.math-tablet .math-answer-panel{display:grid}.math-answer-panel label{margin:0 0 5px}.math-answer-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}.math-answer-row input{min-height:44px}.math-check-status{min-width:120px;padding:9px 10px;border-radius:12px;background:#fff;border:1px dashed var(--line);font-size:11px;font-weight:900;color:var(--muted);text-align:center}.math-check-status.correct{background:#effcf5;border-color:#bfe4ce;color:#32835b}.math-check-status.wrong{background:#fff5df;border-color:#efd393;color:#986a18}.math-progress-state{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:#f7f4ff;border:1px solid #d9d1ef;color:#71639a;font-size:10px;font-weight:900}
+.math-weak-badge{display:inline-flex;align-items:center;gap:4px;background:#fff0ea;border:1px solid #f1c5b5;border-radius:999px;padding:5px 8px;font-size:10px;color:#9c5e45;font-weight:900}
+@media(max-width:700px){.math-answer-panel{grid-template-columns:1fr}.math-answer-row{grid-template-columns:1fr auto}.math-check-status{min-width:0}.update-app-bar{margin:0 8px 8px;flex-wrap:wrap}.update-app-bar span{flex-basis:100%}}
+@media print{.update-app-bar,.math-answer-panel{display:none!important}}
+
+
+/* ===== V2.2 介面全面重構 ===== */
+:root{--nav-height:56px;--ui-gap:14px}
+body.parent-mode .child-tab{display:none!important}
+body.child-mode .parent-tab{display:none!important}
+.header{max-width:1500px;min-height:72px;margin-bottom:14px}
+.layout{max-width:1500px;grid-template-columns:360px minmax(0,1fr);gap:16px}
+.top-tabs{top:0;justify-content:flex-start;gap:5px;border-radius:18px;padding:6px;background:rgba(255,255,255,.94)}
+.view-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;border-radius:12px;padding:0 14px}
+body.child-mode .layout{max-width:1180px}
+body.child-mode .main{max-width:1180px;margin:0 auto}
+
+/* 小朋友首頁 */
+.child-home-view{padding-bottom:8px}.home-shell{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);gap:14px;align-items:start}
+.home-hero-card{grid-row:span 2;background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--soft) 70%,white));border:1px solid var(--line);border-radius:28px;padding:clamp(18px,3vw,30px);box-shadow:var(--shadow);min-height:360px}
+.home-kicker{display:inline-flex;padding:7px 11px;border-radius:999px;background:var(--soft);color:var(--accent);font-size:12px;font-weight:900;margin-bottom:8px}.home-hero-card h2{font-size:clamp(26px,4vw,42px);line-height:1.15;margin:6px 0 8px}.home-hero-card>p{margin:0 0 20px;color:var(--muted);font-weight:700}
+body.child-mode .child-subject-picker{display:block!important;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.child-subject-head{display:none}.child-subject-grid{grid-template-columns:repeat(5,minmax(94px,1fr));gap:10px}.child-mode-btn{min-height:92px;border-radius:22px;font-size:13px;box-shadow:0 7px 16px rgba(80,60,70,.05)}.child-mode-btn span{font-size:29px;margin-bottom:7px}.child-mode-btn small{font-size:13px}.child-mode-btn:hover{transform:translateY(-1px)}
+.smart-daily-bar{display:block!important;margin:0;border-radius:24px;padding:18px;min-height:170px}.smart-daily-head strong{font-size:17px}.smart-daily-progress{height:14px;margin:15px 0}.smart-daily-actions{margin-top:12px}
+.home-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.home-shortcuts button{border:1px solid var(--line);border-radius:20px;background:#fff;min-height:116px;padding:14px;text-align:left;color:var(--text);cursor:pointer;box-shadow:0 8px 18px rgba(90,70,82,.06)}.home-shortcuts button:hover{border-color:var(--accent);background:var(--soft)}.home-shortcuts span{display:block;font-size:27px;margin-bottom:8px}.home-shortcuts strong{display:block;font-size:14px}.home-shortcuts small{display:block;color:var(--muted);margin-top:4px;line-height:1.35}
+
+/* 家長列印工作台 */
+.parent-workbench{padding:12px!important;background:rgba(255,255,255,.97);border-radius:24px!important}.workbench-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 7px 12px}.workbench-head>div{display:flex;align-items:center;gap:10px}.workbench-head>div>span{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--soft);font-size:21px}.workbench-head strong{display:block;font-size:15px}.workbench-head small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.workbench-version{font-size:10px;font-weight:900;color:var(--accent);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 8px}.quick-print-top{position:sticky;top:0;z-index:15;margin:0 0 9px;padding:4px 0 9px;background:linear-gradient(to bottom,rgba(255,255,255,.98) 82%,transparent)}.quick-print-top .btn{min-height:52px;border-radius:15px}
+.settings-group{border:1px solid var(--line);border-radius:17px;background:#fff;margin:8px 0;overflow:hidden}.settings-group>summary{list-style:none;display:flex;align-items:center;gap:9px;padding:11px 12px;cursor:pointer;user-select:none}.settings-group>summary::-webkit-details-marker{display:none}.settings-group>summary:after{content:'⌄';margin-left:auto;color:var(--muted);font-weight:900;transition:.18s}.settings-group[open]>summary:after{transform:rotate(180deg)}.settings-group>summary>span:nth-child(2){min-width:0}.settings-group>summary strong{display:block;font-size:13px}.settings-group>summary small{display:block;font-size:10px;color:var(--muted);margin-top:2px}.step-no{flex:0 0 auto;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--soft);color:var(--accent);font-size:12px;font-weight:900}.settings-body{border-top:1px solid var(--line);padding:10px 11px 12px}.settings-body .smart-box,.settings-body .custom-print-card{margin:0;background:var(--soft);box-shadow:none}.settings-body .mode-grid{grid-template-columns:repeat(3,1fr)}.settings-body .mode-btn{min-height:48px;font-size:12px;border-radius:13px}.toggle-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.toggle-row .switch{margin:0;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff;align-items:center}.workbench-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.workbench-actions .btn{min-height:46px}.workbench-actions .restore-defaults{grid-column:1/-1;background:#fff;color:var(--text);border:1px dashed color-mix(in srgb,var(--accent) 55%,var(--line))}.workbench-actions .restore-defaults:hover{background:var(--soft);border-style:solid}.workbench-note{font-size:10px;color:var(--muted);line-height:1.5;padding:10px 4px 12px;text-align:center}
+
+/* 練習頁：把主要動作和輔助資訊分層 */
+#writeView>.card{border-radius:28px}.write-hero{align-items:flex-start}.write-hero .target{display:inline-block;margin-left:4px}.quick-sets{padding-top:4px}.char-grid{border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--soft) 45%,white);padding:9px;max-height:180px}.canvas-wrap{margin-top:14px}.write-tools{padding:7px;border:1px solid var(--line);border-radius:16px;background:#fff}.write-actions{padding-top:2px}.math-answer-panel{border-radius:17px}
+
+/* 家長控制中心 */
+#parentView>.card{border-radius:28px}.parent-grid{grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}.parent-box{grid-column:span 6;border-radius:20px;padding:16px}.parent-box:nth-child(2),.parent-box:nth-child(3){grid-column:span 6}.parent-box:last-child{grid-column:span 12}.parent-box h3{font-size:15px;margin-bottom:10px}.parent-dashboard{grid-template-columns:repeat(4,1fr);gap:10px}.parent-dash-card{border-radius:18px}
+
+/* 列印頁 */
+#printView{max-width:none}.preview-toolbar{top:0;border-radius:16px}.preview-viewport{background:color-mix(in srgb,var(--soft) 55%,#f5f5f5);border:1px solid var(--line);border-radius:20px;padding:16px}.preview-scale{transform-origin:top center}
+
+@media(min-width:1001px){
+ body.parent-mode .app{height:100vh;height:100dvh;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+ body.parent-mode .header{flex:0 0 auto}
+ body.parent-mode .update-app-bar:not([hidden]){flex:0 0 auto}
+ body.parent-mode .layout{flex:1 1 auto;width:100%;height:auto!important;min-height:0;overflow:hidden;align-items:stretch}
+ body.parent-mode .parent-workbench{height:100%!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden;overscroll-behavior-y:contain;padding-bottom:28px!important;scroll-padding-bottom:28px}
+ body.parent-mode .main{height:100%!important;min-height:0!important;overflow-y:auto!important;padding-bottom:24px}
+}
+@media(max-width:1000px){.layout{grid-template-columns:1fr;height:auto!important;overflow:visible!important}.parent-workbench{display:block!important;position:static!important;max-height:none!important;height:auto!important}.home-shell{grid-template-columns:1fr}.home-hero-card{grid-row:auto;min-height:auto}.home-shortcuts{grid-template-columns:repeat(4,1fr)}.parent-grid{grid-template-columns:1fr 1fr}.parent-box,.parent-box:nth-child(2),.parent-box:nth-child(3),.parent-box:last-child{grid-column:auto}}
+@media(max-width:700px){
+ .app{padding:7px 7px 82px}.header{min-height:auto;margin-bottom:8px}.brand h1{font-size:16px}.role-switch{width:100%}
+ .top-tabs{left:7px;right:7px;bottom:7px;top:auto;border-radius:18px;padding:5px;gap:2px;justify-content:space-around}.view-btn{display:flex!important;min-width:0;flex:1 1 0;padding:0 5px;font-size:10px;min-height:50px}.view-btn:nth-child(3),.view-btn:nth-child(6){display:flex!important}.top-tabs .badge-nav{display:none!important}body.child-mode .parent-tab{display:none!important}body.parent-mode .child-tab{display:none!important}
+ .home-shell{display:block}.home-hero-card{padding:16px;border-radius:21px}.home-hero-card h2{font-size:25px}.home-hero-card>p{font-size:12px;margin-bottom:14px}.child-subject-grid{grid-template-columns:repeat(5,72px);overflow-x:auto;justify-content:start;padding-bottom:4px}.child-mode-btn{min-width:72px;min-height:76px;border-radius:17px}.child-mode-btn span{font-size:22px;margin-bottom:4px}.child-mode-btn small{font-size:11px}.smart-daily-bar{margin-top:10px;min-height:0;border-radius:19px;padding:13px}.home-shortcuts{grid-template-columns:1fr 1fr;margin-top:10px}.home-shortcuts button{min-height:100px;border-radius:17px;padding:12px}
+ .settings-body .mode-grid{grid-template-columns:repeat(3,1fr)}.toggle-row{grid-template-columns:1fr}.workbench-actions{position:sticky;bottom:72px;background:rgba(255,255,255,.94);padding:7px 0;z-index:12}
+ .parent-grid{grid-template-columns:1fr}.parent-box,.parent-box:nth-child(2),.parent-box:nth-child(3),.parent-box:last-child{grid-column:auto}.parent-dashboard{grid-template-columns:1fr 1fr}
+ .preview-viewport{padding:7px;border-radius:14px}
+}
+@media(max-width:420px){.child-subject-grid{grid-template-columns:repeat(5,68px)}.home-shortcuts{gap:7px}.home-shortcuts button{min-height:94px}.view-btn{font-size:9px}.settings-body{padding:9px}}
+@media print{#homeView,.home-shell,.home-shortcuts,.settings-group,.workbench-head,.workbench-actions,.workbench-note{display:none!important}}
+
+
+/* ===== V2.3 列印一致性 & 學習資料可靠度強化 ===== */
+.math-question-nav{margin:10px 0;padding:10px;border:1px solid var(--line);border-radius:16px;background:#fff}.math-nav-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.math-nav-head span{font-size:11px;color:var(--muted);font-weight:900}.math-nav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;margin-top:8px}.math-nav-btn{min-height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);font-weight:900;cursor:pointer}.math-nav-btn.current{outline:3px solid color-mix(in srgb,var(--accent) 24%,transparent);border-color:var(--accent)}.math-nav-btn.done{background:#edf9f3;border-color:#b8dfca;color:#34775a}.math-nav-btn.correct{background:#e9f8f0;border-color:#8ed0ac;color:#27764e}.math-nav-btn.wrong{background:#fff2f2;border-color:#efb8bd;color:#a34b55}.math-nav-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--muted);font-weight:800}
+.print-preflight{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 10px;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:#fff}.print-preflight>div:first-child{min-width:0}.print-preflight strong{display:block;font-size:13px}.print-preflight span{display:block;font-size:11px;color:var(--muted);margin-top:3px;font-weight:800}.page-print-picker{min-width:220px;border:1px solid var(--line);border-radius:12px;background:var(--soft);padding:0}.page-print-picker summary{cursor:pointer;padding:9px 10px;font-size:11px;font-weight:900;list-style:none}.page-print-picker summary::-webkit-details-marker{display:none}.page-picker-actions{display:flex;gap:6px;padding:0 8px 7px}.page-picker-actions .btn{min-height:32px;font-size:10px;flex:1}.page-checkboxes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:0 8px 9px;max-height:132px;overflow:auto}.page-check{display:flex;align-items:center;justify-content:center;gap:4px;border:1px solid var(--line);background:#fff;border-radius:9px;min-height:32px;font-size:10px;font-weight:900;cursor:pointer}.page-check input{width:15px;height:15px}.storage-health{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:#fff}.storage-health strong,.storage-health span{display:block}.storage-health strong{font-size:11px}.storage-health span{font-size:10px;color:var(--muted);margin-top:2px}.storage-health.warn{background:#fff8df;border-color:#efd589}.storage-health.danger{background:#fff0f1;border-color:#efb8bd}.storage-health .btn{min-height:34px;font-size:10px;white-space:nowrap}.backup-safety-note{margin:0 0 8px;padding:8px 9px;border:1px dashed #e3c17b;border-radius:10px;background:#fff9e8;color:#886812;font-size:10px;font-weight:800;line-height:1.45}
+/* 畫面預覽不再重新排版：直接以 A4 實際尺寸建立，再只做整頁縮放 */
+@media screen{
+ #previewViewport{overflow:auto!important;padding:4px 4px 14px!important}
+ #previewScale{width:210mm!important;max-width:none!important;margin:0 auto!important;transform:none!important;zoom:1}
+ #printView .practice-page{width:210mm!important;min-width:210mm!important;max-width:none!important;min-height:297mm!important;height:297mm!important;aspect-ratio:auto!important;margin:0 0 18px!important;padding:10mm 12mm!important;box-sizing:border-box!important;border-radius:8px!important;overflow:hidden!important}
+ #printView .practice-page .page-head .name-line{font-size:4.2mm!important;gap:8mm!important;flex-wrap:nowrap!important;margin-bottom:3mm!important}
+ #printView .practice-page .page-head h2{font-size:7mm!important;margin:1mm 0 2mm!important;line-height:1.2!important}
+ #printView .practice-page .page-meta{font-size:3.5mm!important;margin-bottom:2mm!important}
+ #printView .practice-page .page-content{display:flex!important;flex-direction:column!important;justify-content:space-evenly!important;gap:1.7mm!important;min-height:0!important}
+#printView .practice-page.daily-math-page .page-content{justify-content:flex-start!important}
+ #printView .practice-page.top-align .page-content{justify-content:flex-start!important;gap:3.2mm!important}
+ #printView .practice-page .page-content>.print-row{flex:1 1 0!important;display:grid!important;grid-template-columns:7mm repeat(var(--cell-count,5),minmax(0,1fr))!important;gap:2.2mm!important;padding:1.2mm 0!important;min-height:0!important}
+ #printView .practice-page .page-content>.print-row>strong{font-size:4.5mm!important}
+ #printView .practice-page .page-content .print-box{width:100%!important;height:auto!important;aspect-ratio:1/1!important;padding:4%!important}
+ #printView .practice-page .page-content .print-row.line-practice,#printView .practice-page .page-content .print-row.fourline-practice{grid-template-columns:7mm minmax(34mm,45mm) 1fr!important;min-height:26mm!important;gap:3mm!important}
+ #printView .practice-page .page-content .line-area,#printView .practice-page .page-content .four-line-area{height:100%!important;min-height:23mm!important}
+ #printView .practice-page .page-footer{font-size:3.4mm!important;margin-top:2mm!important}
+ #printView .daily-math-grid{grid-template-columns:1fr 1fr!important;gap:6mm 10mm!important;align-content:start!important}
+ #printView .daily-math-q{font-size:8mm!important;padding:4mm 1mm!important}
+}
+@media(max-width:700px){.print-preflight{display:block}.page-print-picker{margin-top:8px;min-width:0}.page-checkboxes{grid-template-columns:repeat(5,minmax(0,1fr))}.math-nav-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media print{.print-preflight,.math-question-nav,.storage-health,.backup-safety-note{display:none!important}}
+
+</style>
+</head>
+<body data-theme="cat">
+<div class="app">
+<header class="header">
+ <div class="brand"><div class="mascot"></div><div><h1>兒童書寫練習產生器 V2.3.1</h1><p>今日首頁・平板書寫・智慧數學・成長紀錄・A4 練習紙</p></div></div>
+ <div class="header-right"><button id="installAppBtn" class="btn soft install-app-btn no-print" type="button" hidden>📲 安裝 App</button><div id="offlineStatus" class="offline-pill no-print">● 線上</div><div class="role-switch no-print"><button id="childModeBtn" class="role-btn active" type="button">👧 小朋友模式</button><button id="parentModeBtn" class="role-btn" type="button">🔒 家長模式</button></div><select id="childSelect" class="child-select" aria-label="目前小朋友"></select><div class="streak-pill">🔥 <span id="headerStreak">0</span> 天</div><div class="points-pill">⭐ <span id="headerPoints">0</span></div></div>
+</header>
+<div id="updateAppBar" class="update-app-bar no-print" hidden><span>✨ 發現新版，可立即更新，不會刪除孩子的本機學習資料。</span><button id="updateAppBtn" class="btn primary" type="button">立即更新</button><button id="dismissUpdateBtn" class="btn soft" type="button">稍後</button></div>
+<div class="layout">
+<aside class="sidebar panel no-print parent-only parent-workbench">
+ <div class="workbench-head"><div><span>🖨️</span><div><strong>練習紙工作台</strong><small>依序設定內容、難度與 A4 版面</small></div></div><span class="workbench-version">V2.3.1</span></div>
+ <div class="quick-print-top"><button class="btn primary" id="printBtn" type="button">🖨️ 列印目前練習紙</button></div>
+ <details class="settings-group" open>
+  <summary><span class="step-no">1</span><span><strong>選擇練習內容</strong><small>英文、注音、數字、國字、加減法</small></span></summary>
+  <div class="settings-body">
+   <div class="mode-grid" id="modeTabs">
+    <button class="mode-btn active" data-mode="english">Aa 英文</button><button class="mode-btn" data-mode="zhuyin">ㄅ 注音</button><button class="mode-btn" data-mode="number">123 數字</button><button class="mode-btn" data-mode="chinese">國 國字</button><button class="mode-btn" data-mode="math">＋− 加減</button><button class="mode-btn" data-mode="custom">✍ 自訂</button>
+   </div>
+   <label for="themeSelect">主題風格</label><select id="themeSelect"><option value="cat">🐱 貓貓粉紅</option><option value="dino">🦖 恐龍綠</option><option value="space">🚀 太空藍</option><option value="fire">🚒 消防車紅</option><option value="bear">🐻 熊熊奶茶</option></select>
+   <div id="setBox"><label for="setSelect">內建練習內容</label><select id="setSelect"></select></div>
+   <div id="customBox" style="display:none"><label for="customInput">自訂內容</label><input id="customInput" type="text" maxlength="100" value="我 愛 學 習" placeholder="用空格分開，例如：我 愛 學 習"></div>
+   <div id="mathSettings" style="display:none"><div class="row2"><div><label for="mathType">題型</label><select id="mathType"><option value="add">加法</option><option value="sub">減法</option><option value="mix" selected>加減混合</option></select></div><div><label for="mathMax">範圍</label><select id="mathMax"><option value="10">0～10</option><option value="20" selected>0～20</option><option value="50">0～50</option><option value="100">0～100</option></select></div></div><label for="mathCount">題目數量</label><select id="mathCount"><option value="10">10 題</option><option value="20" selected>20 題</option><option value="30">30 題</option><option value="40">40 題</option><option value="50">50 題</option></select></div>
+  </div>
+ </details>
+ <details class="settings-group" open>
+  <summary><span class="step-no">2</span><span><strong>設定學習難度</strong><small>年齡階段與描字方式</small></span></summary>
+  <div class="settings-body">
+   <div class="smart-box"><h3>✨ 智慧快速設定</h3><label for="agePreset">學習階段</label><select id="agePreset"><option value="custom">自訂設定</option><option value="preschool" selected>幼兒園｜超大格、多描字</option><option value="grade1">小一｜大格、標準描字</option><option value="grade2">小二｜標準格、增加空白</option></select><label class="mixed-label" for="dailySheet"><input id="dailySheet" type="checkbox">🌞 列印每日學習單（英文＋注音＋數字＋加減）</label><label class="mixed-label" for="mixedSheet"><input id="mixedSheet" type="checkbox">列印智慧混合學習單（英文＋注音＋數字）</label></div>
+   <div class="row2"><div><label for="traceStyle">描字模式</label><select id="traceStyle"><option value="standard">範例＋虛線描字＋空白</option><option value="more" selected>更多虛線描字</option><option value="traceOnly">只要虛線描字</option><option value="blankOnly">只要空白練習</option></select></div><div><label for="sizeSelect">格子大小</label><select id="sizeSelect"><option value="normal">標準</option><option value="large">大格</option><option value="huge" selected>幼兒超大格</option></select></div></div>
+  </div>
+ </details>
+ <details class="settings-group" open>
+  <summary><span class="step-no">3</span><span><strong>A4 列印版面</strong><small>格線、每頁數量、姓名與省墨</small></span></summary>
+  <div class="settings-body">
+   <label for="paperStyle">本模式練習紙格線</label><select id="paperStyle"><option value="square">□ 方格</option><option value="tian">田字格</option><option value="mi">米字格</option><option value="dotted">⋯ 虛線方格</option><option value="fourline">Aa 英文四線格</option><option value="lines">≡ 橫線練習</option><option value="blank">空白練習</option></select><div class="mode-style-note" id="modeStyleNote">英文會記住自己的格線設定</div>
+   <div class="row2"><div><label for="printCount">列印內容</label><select id="printCount"><option value="10">前 10 個</option><option value="20">前 20 個</option><option value="all" selected>全部內容</option></select></div><div><label for="pageItems">每頁練習數</label><select id="pageItems"><option value="auto" selected>✨ 自動最大化</option><option value="4">每頁 4 個</option><option value="6">每頁 6 個</option><option value="8">每頁 8 個</option><option value="10">每頁 10 個</option></select></div></div>
+   <label for="repeatCurrent">整頁單題</label><select id="repeatCurrent"><option value="no" selected>一般內容</option><option value="yes">目前內容重複整頁</option></select>
+   <div class="page-summary" id="pageSummary">預計 1 頁</div>
+   <div class="toggle-row"><label class="switch"><input id="showName" type="checkbox" checked><span>姓名／日期欄</span></label><label class="switch"><input id="inkSave" type="checkbox"><span>黑白省墨列印</span></label></div>
+  </div>
+ </details>
+ <details class="settings-group">
+  <summary><span class="step-no">4</span><span><strong>自訂列印內容</strong><small>直接輸入自己的字、詞或題目</small></span></summary>
+  <div class="settings-body">
+   <div class="custom-print-card" id="customPrintCard">
+    <h3>✏️ 自訂列印內容</h3><p>用空格、逗號或換行分開；國字／注音也可直接連續輸入。</p>
+    <textarea id="printCustomInput" maxlength="300" placeholder="例如：
+王 小 明
+ㄅ ㄆ ㄇ
+Apple Cat
+1 2 3"></textarea>
+    <div class="custom-print-tools"><div><label for="printCustomSplit">內容拆分</label><select id="printCustomSplit"><option value="auto" selected>✨ 自動判斷</option><option value="group">依空格／換行分組</option><option value="char">每個字分開</option></select></div><label class="switch" for="usePrintCustom"><input id="usePrintCustom" type="checkbox"><span>列印使用自訂內容</span></label></div>
+    <div class="custom-print-status" id="customPrintStatus">尚未啟用，自訂內容不影響目前練習。</div>
+   </div>
+  </div>
+ </details>
+ <div class="workbench-actions"><button class="btn primary" id="regenBtn">↻ 重新產生</button><button class="btn soft" id="clearBtnSide">清除手寫</button><button class="btn restore-defaults" id="restoreDefaultsBtn" type="button">↺ 恢復練習設定</button></div>
+ <div class="workbench-note">「恢復練習設定」只還原介面、練習與列印選項，不會刪除小朋友、點數、作品、弱項、禮物或學習紀錄。</div>
+</aside>
+<main class="main">
+ <nav class="top-tabs no-print">
+  <button class="view-btn active child-tab home-nav" data-view="homeView">🏠 今日首頁</button>
+  <button class="view-btn child-tab" data-view="writeView">✍️ 練習</button>
+  <button class="view-btn child-tab" data-view="taskView">🎯 任務</button>
+  <button class="view-btn child-tab" data-view="growthView">🌱 成長</button>
+  <button class="view-btn child-tab" data-view="rewardView">🎁 禮物</button>
+  <button class="view-btn child-tab badge-nav" data-view="badgeView">🏆 徽章</button>
+  <button class="view-btn parent-tab" data-view="printView">🖨️ 練習紙</button>
+  <button class="view-btn parent-tab" data-view="parentView">⚙️ 家長管理</button>
+ </nav>
+ <section id="homeView" class="view active child-home-view"><div class="home-shell">
+  <div class="home-hero-card">
+   <div class="home-kicker">🌈 今天也來完成一點點</div>
+   <h2>今天想先從哪一科開始？</h2>
+   <p>選一個喜歡的科目直接開始，不需要進入家長模式。</p>
+   <div class="child-subject-picker no-print" id="childSubjectPicker">
+    <div class="child-subject-grid" role="group" aria-label="小朋友選擇練習科目">
+     <button class="child-mode-btn active" type="button" data-child-mode="english"><span>Aa</span><small>英文</small></button>
+     <button class="child-mode-btn" type="button" data-child-mode="zhuyin"><span>ㄅ</span><small>注音</small></button>
+     <button class="child-mode-btn" type="button" data-child-mode="number"><span>123</span><small>數字</small></button>
+     <button class="child-mode-btn" type="button" data-child-mode="chinese"><span>國</span><small>國字</small></button>
+     <button class="child-mode-btn" type="button" data-child-mode="math"><span>＋−</span><small>加減法</small></button>
+    </div>
+    <div class="child-math-note">➕ 加減法可直接在平板逐題手寫，並自動保存每題進度。</div>
+   </div>
+  </div>
+  <div class="smart-daily-bar no-print" id="smartDailyBar">
+   <div class="smart-daily-head"><strong>🌞 今日學習進度</strong><span id="dailyPlanText">正在準備今天的學習進度…</span></div>
+   <div class="smart-daily-progress"><i id="dailyPlanProgress"></i></div>
+   <div class="smart-daily-actions"><button class="btn primary" id="smartContinueBtn" type="button">▶ 繼續今日課表</button><button class="btn soft" id="reviewQueueBtn" type="button">🧠 加強複習 <span id="reviewCount">0</span></button></div>
+  </div>
+  <div class="home-shortcuts">
+   <button type="button" data-home-view="taskView"><span>🎯</span><strong>今日任務</strong><small>看看還差幾題</small></button>
+   <button type="button" data-home-view="growthView"><span>🌱</span><strong>我的成長</strong><small>弱項與作品相簿</small></button>
+   <button type="button" data-home-view="rewardView"><span>🎁</span><strong>我的禮物</strong><small>看看目標還差多少</small></button>
+   <button type="button" data-home-view="badgeView"><span>🏆</span><strong>徽章收藏</strong><small>看看解鎖了什麼</small></button>
+  </div>
+ </div></section>
+ <section id="writeView" class="view"><div class="card">
+  <div class="hero write-hero"><div><span class="badge" id="modeBadge">英文全套</span><h2>點一個就直接寫：<span id="writeTarget" class="target">Aa</span></h2><p id="setHint">A–Z 大小寫一次呈現，不用家長輸入。</p></div><div class="hero-actions no-print"><div class="badge">完成 +5 ⭐</div><button class="btn primary maximize-btn" id="maximizeWriteBtn" type="button">⛶ 最大化書寫</button></div></div>
+  <div class="quick-sets" id="quickSets"></div><div class="char-grid" id="charGrid"></div>
+  <div class="write-head"><div class="badge">目前：<span id="positionText">1 / 26</span></div><div class="badge">今日本類：<span id="todayModeCount">0</span> 題</div><div class="draft-pill" id="draftPill">💾 筆跡已暫存</div></div><div class="child-math-controls no-print" id="childMathControls"><div><label for="childMathType">題型</label><select id="childMathType"><option value="add">加法</option><option value="sub">減法</option><option value="mix">加減混合</option></select></div><div><label for="childMathMax">範圍</label><select id="childMathMax"><option value="10">0～10</option><option value="20">0～20</option><option value="50">0～50</option><option value="100">0～100</option></select></div><div><label for="childMathCount">題數</label><select id="childMathCount"><option value="20">20 題</option><option value="30">30 題</option><option value="40">40 題</option><option value="50">50 題</option></select></div></div>
+  <div class="focus-bar no-print" id="focusBar"><div class="focus-target">✍️ 現在寫：<strong id="focusTarget">Aa</strong></div><div class="focus-points">⭐ <span id="focusPoints">0</span></div><button class="btn soft" id="exitFocusBtn" type="button">✕ 離開最大化</button></div>
+  <div class="canvas-wrap" id="canvasWrap"><div class="canvas-guide" id="canvasGuide">Aa</div><canvas id="drawCanvas" class="draw-canvas"></canvas></div>
+  <div class="write-tools no-print"><select id="penWidth" class="tool-select"><option value="5">細筆</option><option value="8" selected>中筆</option><option value="12">粗筆</option></select><select id="penColor" class="tool-select"><option value="accent">主題色</option><option value="#333333">黑色</option><option value="#e45b7d">粉紅</option><option value="#4f7cff">藍色</option><option value="#43a66f">綠色</option></select><button class="btn soft" id="eraserBtn">橡皮擦</button><label class="pen-only"><input id="penOnlyToggle" type="checkbox">✏️ 觸控筆優先</label></div>
+  <div class="math-answer-panel no-print" id="mathAnswerPanel"><div><label for="mathAnswerInput">⌨️ 輸入答案核對（也可只用手寫）</label><div class="math-answer-row"><input id="mathAnswerInput" type="number" inputmode="numeric" placeholder="答案"><button class="btn primary" id="checkMathAnswerBtn" type="button">檢查答案</button></div></div><div class="math-check-status" id="mathCheckStatus">尚未核對</div></div>
+  <div class="math-question-nav no-print" id="mathQuestionNav" hidden><div class="math-nav-head"><strong>🧮 題目導航</strong><span id="mathNavSummary">0 / 0</span></div><div class="math-nav-grid" id="mathNavGrid"></div><div class="math-nav-legend"><span>● 目前</span><span>✓ 完成</span><span>✓ 答對</span><span>× 答錯</span><span>○ 未完成</span></div></div>
+  <div class="write-actions no-print"><button class="btn soft" id="prevBtn">← 上一題</button><button class="btn soft" id="undoBtn">↶ 復原</button><button class="btn soft" id="clearBtn">清除</button><button class="btn warn" id="markReviewBtn">🧠 加強這題</button><button class="btn good" id="completeBtn">完成這一題 ⭐</button><button class="btn primary" id="nextBtn">下一題 →</button></div>
+  <div class="review-tip no-print">🧠 覺得這題還不熟，可以按「加強這題」；之後完成 3 次，系統會自動讓它從加強清單畢業。</div><div class="math-tablet-hint no-print">➕ 每題筆跡會分開自動暫存。可輸入答案核對；答錯時只提示再想想，並自動安排同類型題目日後複習。</div><div class="reward-toast" id="rewardToast"></div>
+  <div class="stats"><div class="stat"><strong id="statPoints">0</strong><span>目前點數</span></div><div class="stat"><strong id="statDone">0</strong><span>累積完成</span></div><div class="stat"><strong id="statStreak">0</strong><span>連續天數</span></div><div class="stat"><strong id="statBadges">0</strong><span>獲得徽章</span></div></div>
+ </div></section>
+ <section id="taskView" class="view"><div class="card"><div class="hero"><div><span class="badge">智慧今日課表</span><h2>🎯 今天一關一關完成！</h2><p>每一類達標會自動送任務點數；可直接按「開始練習」跳到還沒完成的科目。</p></div><div class="points-pill">⭐ <span id="taskPoints">0</span></div></div><div class="task-grid" id="taskGrid"></div><div id="allDoneBox"></div></div></section>
+ <section id="badgeView" class="view"><div class="card"><div class="hero"><div><span class="badge">我的成就牆</span><h2>🏆 徽章收藏冊</h2><p>持續練習就會慢慢解鎖。</p></div><div class="badge"><span id="badgeCount">0</span> / 10</div></div><div class="badge-grid" id="badgeGrid"></div></div></section>
+
+ <section id="growthView" class="view"><div class="card">
+  <div class="hero"><div><span class="badge">V2.3.1 智慧成長</span><h2>🌱 我的成長基地</h2><p>看看今天的進度、加強內容與最近完成的手寫作品。</p></div><div class="points-pill">⭐ <span id="growthPoints">0</span> 點</div></div>
+  <div class="growth-grid">
+   <div class="growth-card"><h3>🌞 今天的學習進度</h3><div class="daily-plan-list" id="v20DailyPlanGrid"></div></div>
+   <div class="growth-card"><h3>📈 我的累積</h3><div class="growth-summary" id="v20GrowthSummary"></div><div id="v20GoalMini" class="review-tip"></div></div>
+   <div class="growth-card full"><h3>🧠 智慧加強複習</h3><div class="weak-list" id="v20WeakList"></div></div>
+   <div class="growth-card full"><div class="hero"><div><h3 style="margin:0">🖼️ 我的手寫作品</h3><p>完成題目後會自動保存最近作品（家長可在設定關閉）。</p></div><button id="refreshGalleryBtn" class="btn soft no-print" type="button">重新整理</button></div><div id="galleryGrid" class="gallery-grid"></div><div id="galleryEmpty" class="gallery-empty" style="display:none">還沒有作品，完成一題後就會出現在這裡 📚</div></div>
+  </div>
+ </div></section>
+ <section id="printView" class="view"><div class="preview-toolbar no-print"><strong>🖨️ A4 練習紙預覽</strong><div class="zoom-group" aria-label="預覽縮放"><button class="zoom-btn active" data-zoom="fit" type="button">適合寬度</button><button class="zoom-btn" data-zoom="0.75" type="button">75%</button><button class="zoom-btn" data-zoom="1" type="button">100%</button><button class="zoom-btn" data-zoom="1.25" type="button">125%</button></div><span class="layout-safety" id="layoutSafety">✓ A4 安全排版</span></div><div class="print-preflight no-print" id="printPreflight"><div><strong id="printPreflightTitle">列印前檢查</strong><span id="printPreflightText">正在檢查頁數與版面…</span></div><details class="page-print-picker" id="pagePrintPicker"><summary>📄 選擇列印頁面</summary><div class="page-picker-actions"><button class="btn soft" id="selectAllPagesBtn" type="button">全選</button><button class="btn soft" id="clearPagesBtn" type="button">清除</button></div><div class="page-checkboxes" id="pageCheckboxes"></div></details></div><div class="preview-viewport" id="previewViewport"><div class="preview-scale" id="previewScale"><div class="print-sheet" id="printSheet"><div id="printHeader"></div><div id="printContent"></div><div class="footer-note">⭐ 看範例、描一描、再自己寫寫看！</div></div></div></div><div class="write-actions no-print" id="mathCompleteWrap" style="display:none"><button class="btn good" id="completeMathBtn">✅ 完成這份數學練習 ⭐</button></div></section>
+ <section id="rewardView" class="view"><div class="card"><div class="hero"><div><span class="badge">家庭獎勵制度</span><h2>🎁 我的獎勵商店</h2><p>兌換後會產生待領取紀錄，由家長確認已領取。</p></div><div class="points-pill">⭐ <span id="shopPoints">0</span> 點</div></div><div class="gift-goal" id="giftGoal"><div class="gift-goal-top"><strong>🎯 我的禮物目標</strong><select id="goalGiftSelect" aria-label="選擇禮物目標"></select></div><div class="goal-progress"><i id="goalProgressBar"></i></div><div class="goal-text" id="goalProgressText">先選一個想努力的禮物吧！</div></div><div class="shop-grid" id="shopGrid"></div><div class="history"><h3>兌換紀錄</h3><div id="historyList"></div></div></div></section>
+ <section id="parentView" class="view"><div class="card"><div id="parentLocked" class="parent-lock"><span class="badge">家長模式</span><h2>🔒 家長驗證</h2><p style="color:var(--muted)">小朋友模式不顯示列印與管理設定。輸入家長 PIN 後，才能進入家長控制台。</p><input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="輸入 4 位數 PIN"><button class="btn primary" id="unlockBtn" style="width:100%;margin-top:8px">解鎖家長模式</button><button class="btn soft" id="backChildBtn" style="width:100%;margin-top:8px">返回小朋友模式</button><div class="tiny" id="pinHint"></div></div><div id="parentPanel" style="display:none"><div class="hero"><div><span class="badge">家長模式已解鎖</span><h2>👨‍👩‍👧 家長控制台</h2><p>孩子資料彼此獨立，這裡可管理任務、禮物、備份與進度。</p></div><button class="btn soft" id="lockBtn">🔒 鎖定並回兒童模式</button></div><div class="parent-dashboard" id="parentDashboard"></div><div class="parent-grid"><div class="parent-box"><h3>👧 小朋友</h3><p class="tiny" style="margin-top:0">每位孩子都有獨立點數、徽章、連續天數、任務與兌換紀錄。</p><div class="list" id="childList"></div><div class="row2" style="margin-top:8px"><input id="newChildName" type="text" maxlength="12" placeholder="新增小朋友名稱"><button class="btn primary" id="addChildBtn">新增</button></div></div><div class="parent-box"><h3>📊 最近 7 天進度</h3><div id="weeklySummary" class="weekly-summary"></div></div><div class="parent-box"><h3>🌱 智慧成長週報</h3><div id="growthReport"></div></div><div class="parent-box"><h3>🧠 智慧學習設定</h3><div class="smart-toggle-row"><label class="switch" for="autoWeakToggle"><input id="autoWeakToggle" type="checkbox" checked>自動偵測需要加強的題目</label><label class="switch" for="autoGalleryToggle"><input id="autoGalleryToggle" type="checkbox" checked>完成後自動保存手寫作品</label></div><label for="galleryLimitSelect">作品相簿最多保留</label><select id="galleryLimitSelect"><option value="20">20 張</option><option value="50" selected>50 張</option><option value="100">100 張</option><option value="300">300 張</option></select><div class="pwa-help" id="pwaHelpText">📱 支援加入主畫面與離線使用；部署到 HTTPS（例如 GitHub Pages）後即可使用。</div><div class="storage-health" id="storageHealth"><div><strong>💾 本機儲存空間</strong><span id="storageHealthText">正在檢查…</span></div><button class="btn soft" id="storageCheckBtn" type="button">重新檢查</button></div></div><div class="parent-box"><h3>🎁 新增禮物</h3><input id="giftName" type="text" maxlength="30" placeholder="例如：貼紙、小玩具"><div class="row2" style="margin-top:7px"><input id="giftCost" type="number" min="1" max="9999" value="30"><button class="btn primary" id="addGiftBtn">新增禮物</button></div><div class="list" id="giftList" style="margin-top:8px"></div></div><div class="parent-box"><h3>🎯 每日任務</h3><p class="tiny">每類完成題數</p><div class="row2"><input id="taskTarget" type="number" min="1" max="30" value="5"><button class="btn primary" id="saveTaskBtn">儲存</button></div></div><div class="parent-box"><h3>🎟️ 待領取禮物</h3><div class="list" id="pendingList"></div></div><div class="parent-box"><h3>🔑 家長 PIN</h3><div class="row2"><input id="newPin" type="password" inputmode="numeric" maxlength="4" placeholder="新的 4 位 PIN"><button class="btn soft" id="changePinBtn">變更</button></div></div><div class="parent-box"><h3>💾 完整家庭備份</h3><p class="tiny">V2.3.1 可把孩子資料、數學進度、弱項、設定與手寫作品一起匯出；匯入前會先檢查格式、大小與圖片資料。作品較多時備份檔會較大。</p><div class="backup-safety-note">🔐 備份檔可能包含小朋友名稱與手寫作品，請勿上傳到公開網站或公開分享。</div><button class="btn soft" id="exportBtn" style="width:100%">⬇️ 匯出完整備份（含作品）</button><label class="btn soft import-btn" for="importFile">⬆️ 匯入家庭備份</label><input id="importFile" type="file" accept="application/json,.json" hidden><button class="btn danger" id="resetChildBtn" style="width:100%;margin-top:7px">重設目前小朋友進度</button></div></div></div></div></section>
+</main></div></div>
+<div id="printPortal" aria-hidden="true"></div>
+<script src="./app.js" defer></script></body></html>
