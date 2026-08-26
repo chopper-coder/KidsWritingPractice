@@ -1,4 +1,4 @@
-const CACHE='kids-writing-v2.3.1-github-20260825-1';
+const CACHE='kids-writing-v2.4.4-zip-backup-20260826-1';
 const CORE=['./','./index.html','./app.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
 self.addEventListener('message',event=>{if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting()});
